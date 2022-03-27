@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
+    metaAddress:{
+    type:String,
+    required:true
+    },
     prop_id:{
         type:Number,
         required:true
@@ -37,9 +41,14 @@ const propertySchema = new Schema({
     prop_surveyNumber:{
         type:String,
         required:true
+    },
+    prop_isApproved:{
+        type:Boolean,
+        required:true
     }
 },{timestamps: true});
 
-const propertyModel = mongoose.model('properties',propertySchema);
+const propertyModel = mongoose.model('property',propertySchema);
+
 
 module.exports = propertyModel;
