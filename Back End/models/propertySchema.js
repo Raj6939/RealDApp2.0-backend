@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
-    metaAddress:{
-    type:String,
-    required:true
-    },
     prop_id:{
         type:Number,
         required:true
@@ -42,13 +38,24 @@ const propertySchema = new Schema({
         type:String,
         required:true
     },
-    prop_isApproved:{
-        type:Boolean,
+    metamask_address:{
+        type:String,
         required:true
+    },
+    prop_approved:{
+        type:Boolean,
+        default:false
+    },
+    prop_reject:{
+        type:Boolean,
+        default:false
     }
 },{timestamps: true});
 
 const propertyModel = mongoose.model('property',propertySchema);
+const rawPropertyModel = mongoose.model('unapprovedProperty',propertySchema);
 
-
-module.exports = propertyModel;
+module.exports = {
+    propertyModel,
+    rawPropertyModel
+};
