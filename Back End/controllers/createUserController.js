@@ -36,6 +36,7 @@ const getUser = async(req,res) => {
     const property = await rawPropertyModel.find({metamask_address:id})
     const temp = {...data['_doc'],properties:property}
     console.log(temp);
+    console.log(property);
     res.send(temp);
 }
 

@@ -63,7 +63,7 @@ const propertyUpload = (req,res) => {
     const prop_city=req.body.prop_city;
     const prop_state=req.body.prop_state;
     const prop_price=req.body.prop_price;
-    const prop_document=fileName;
+    const prop_document="fileName";
     const prop_surveyNumber=req.body.prop_surveyNumber;
 
     const property = new rawPropertyModel({
