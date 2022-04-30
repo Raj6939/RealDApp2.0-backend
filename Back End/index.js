@@ -26,10 +26,11 @@ app.use((req, res, next) => {
     next();
 });
 
+
 app.use(dashboard);
-app.use(property);
 app.use(user);
 app.use(transfer);
+app.use(property);
 
 app.listen(process.env.PORT,() => {
     console.log("running at 3000");

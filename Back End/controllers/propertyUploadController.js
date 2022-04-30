@@ -19,7 +19,6 @@ mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
     })
     .catch((err) => console.log("not"));
 
-console.log("sdjkjbjd");
 
 //creating bucket
 let bucket;
@@ -59,22 +58,10 @@ const storage = new GridFsStorage({
 
 const propertyUpload = (req,res) => {
 
-  console.log(req.body);
   const obj = JSON.parse(JSON.stringify(req.body));
-  console.log(obj);
-
-    console.log(obj.metamask_address);
-    console.log(obj.prop_id);
-    console.log(obj.prop_area);
-    console.log(obj.prop_house_no);
-    console.log(obj.prop_landmark);
-    console.log(obj.prop_city);
-    console.log(obj.prop_state);
-    console.log(obj.prop_price);
-    console.log(obj.prop_surveyNumber);
 
     const metamask_address= obj.metamask_address;
-    const prop_id=obj.prop_id;
+    // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
     const prop_house_no=obj.prop_house_no;
     const prop_landmark=obj.prop_landmark;
@@ -83,17 +70,6 @@ const propertyUpload = (req,res) => {
     const prop_price=obj.prop_price;
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
-
-    // const metamask_address= req.body.props.metamask_address;
-    // const prop_id=req.body.props.prop_id;
-    // const prop_area=req.body.props.prop_area;
-    // const prop_house_no=req.body.props.prop_house_no;
-    // const prop_landmark=req.body.props.prop_landmark;
-    // const prop_city=req.body.props.prop_city;
-    // const prop_state=req.body.props.prop_state;
-    // const prop_price=req.body.props.prop_price;
-    // const prop_document=fileName;
-    // const prop_surveyNumber=req.body.props.prop_surveyNumber;
 
     const property = new rawPropertyModel({
         metamask_address,
@@ -121,7 +97,7 @@ const propertyUpload = (req,res) => {
 const approvedPropertyUpload = (req,res) => {
 
     const metamask_address= req.body.metamask_address;
-    const prop_id=req.body.prop_id;
+    // const prop_id=req.body.prop_id;
     const prop_area=req.body.prop_area;
     const prop_house_no=req.body.prop_house_no;
     const prop_landmark=req.body.prop_landmark;
@@ -130,8 +106,14 @@ const approvedPropertyUpload = (req,res) => {
     const prop_price=req.body.prop_price;
     const prop_document=req.body.prop_document;
     const prop_surveyNumber=req.body.prop_surveyNumber;
-    
-    const property = new propertyModel({
+    const prop_approved = req.body.prop_approved;
+    const prop_reject = req.body.prop_reject;
+
+    if(prop_reject==true){
+      res.send("property rejected");
+    }else {
+
+        const property = new propertyModel({
         metamask_address,
         prop_id,
         prop_area,
@@ -141,7 +123,9 @@ const approvedPropertyUpload = (req,res) => {
         prop_state,
         prop_price,
         prop_document,
-        prop_surveyNumber
+        prop_surveyNumber,
+        prop_approved,
+        prop_reject
     });
 
     property.save()
@@ -151,7 +135,9 @@ const approvedPropertyUpload = (req,res) => {
         .catch((err) => {
             console.log(err);
         })
-    res.send("Hello World Post");
+    res.send("property approved");
+
+    }
 }
 
 const getproperty = async(req,res) => {
@@ -160,31 +146,43 @@ const getproperty = async(req,res) => {
 }
 
 const download = async (req, res) => {
-  bucket.find({ filename: req.params.name }).toArray((err, files) => {
+  bucket.find({ filename: req.params.filename }).toArray((err, files) => {
     if(!files[0] || files.length==0) {
       return res.status(200).json({
         success : false,
         message : "No files"
       })
     }
-    bucket.openDownloadStreamByName(req.params.name).pipe(res);
+    bucket.openDownloadStreamByName(req.params.filename).pipe(res);
 
   })
 };
 
-const updateDetails = (req,res) => {
-  // async deleteFile(filename: string) {
-  //   const bucket = await this._getBucket();
-  //   const documents = await bucket.find({ filename }).toArray();
-  //   if (documents.length === 0) {
-  //    throw new Error('FileNotFound');
-  //   }
-  //   return Promise.all(
-  //    documents.map((doc) => {
-  //     return bucket.delete(doc._id);
-  //    })
-  //   );
-  //  }
+const updateDetails = async(req,res) => {
+
+    const obj = JSON.parse(JSON.stringify(req.body));
+
+    const metamask_address= obj.metamask_address;
+    const prop_id=obj.prop_id;
+    const prop_area=obj.prop_area;
+    const prop_house_no=obj.prop_house_no;
+    const prop_landmark=obj.prop_landmark;
+    const prop_city=obj.prop_city;
+    const prop_state=obj.prop_state;
+    const prop_price=obj.prop_price;
+    const prop_document=fileName;
+    const prop_surveyNumber=obj.prop_surveyNumber;
+
+    await rawPropertyModel.updateOne({metamask_address:metamask_address},{$set: {
+      prop_area:prop_area,
+      prop_house_no:prop_house_no,
+      prop_landmark:prop_landmark,
+      prop_city:prop_city,
+      prop_state:prop_state,
+      prop_price:prop_price,
+      prop_document:prop_document,
+      prop_surveyNumber:prop_surveyNumber
+    }});
 }
 
 module.exports = {
