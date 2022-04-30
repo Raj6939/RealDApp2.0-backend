@@ -19,6 +19,8 @@ mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
     })
     .catch((err) => console.log("not"));
 
+console.log("sdjkjbjd");
+
 //creating bucket
 let bucket;
 mongoose.connection.on("connected", () => {
@@ -32,6 +34,8 @@ mongoose.connection.on("connected", () => {
 const storage = new GridFsStorage({
     url: dburl,
     file: (req, file) => {
+      console.log("hi");
+      console.log(file);
       return new Promise((resolve, reject) => {
         crypto.randomBytes(16, (err, buf) => {
           if (err) {
@@ -55,16 +59,41 @@ const storage = new GridFsStorage({
 
 const propertyUpload = (req,res) => {
 
-    const metamask_address= req.body.metamask_address;
-    const prop_id=req.body.prop_id;
-    const prop_area=req.body.prop_area;
-    const prop_house_no=req.body.prop_house_no;
-    const prop_landmark=req.body.prop_landmark;
-    const prop_city=req.body.prop_city;
-    const prop_state=req.body.prop_state;
-    const prop_price=req.body.prop_price;
-    const prop_document="fileName";
-    const prop_surveyNumber=req.body.prop_surveyNumber;
+  console.log(req.body);
+  const obj = JSON.parse(JSON.stringify(req.body));
+  console.log(obj);
+
+    console.log(obj.metamask_address);
+    console.log(obj.prop_id);
+    console.log(obj.prop_area);
+    console.log(obj.prop_house_no);
+    console.log(obj.prop_landmark);
+    console.log(obj.prop_city);
+    console.log(obj.prop_state);
+    console.log(obj.prop_price);
+    console.log(obj.prop_surveyNumber);
+
+    const metamask_address= obj.metamask_address;
+    const prop_id=obj.prop_id;
+    const prop_area=obj.prop_area;
+    const prop_house_no=obj.prop_house_no;
+    const prop_landmark=obj.prop_landmark;
+    const prop_city=obj.prop_city;
+    const prop_state=obj.prop_state;
+    const prop_price=obj.prop_price;
+    const prop_document=fileName;
+    const prop_surveyNumber=obj.prop_surveyNumber;
+
+    // const metamask_address= req.body.props.metamask_address;
+    // const prop_id=req.body.props.prop_id;
+    // const prop_area=req.body.props.prop_area;
+    // const prop_house_no=req.body.props.prop_house_no;
+    // const prop_landmark=req.body.props.prop_landmark;
+    // const prop_city=req.body.props.prop_city;
+    // const prop_state=req.body.props.prop_state;
+    // const prop_price=req.body.props.prop_price;
+    // const prop_document=fileName;
+    // const prop_surveyNumber=req.body.props.prop_surveyNumber;
 
     const property = new rawPropertyModel({
         metamask_address,
