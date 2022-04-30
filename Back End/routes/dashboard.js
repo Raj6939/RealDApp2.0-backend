@@ -1,7 +1,9 @@
 const express = require('express');
-const dashboardController = require('../controllers/dashboardController');
+const {home,displayAllUnapprovedProperties} = require('../controllers/dashboardController');
 const router = express.Router();
 
-router.get('/',dashboardController);
+router.get('/',dashboardController); //displaying all approved properties
+ 
+router.get('/unapproved_properties',displayAllUnapprovedProperties); //displaying all properties to moderator
 
 module.exports = router;
