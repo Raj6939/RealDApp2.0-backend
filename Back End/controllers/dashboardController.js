@@ -5,4 +5,12 @@ const home = async(req,res) => {
     res.send(property);
 };
 
-module.exports = home;
+const displayAllUnapprovedProperties = async(req,res) => {
+    const property = await rawPropertyModel.find();
+    res.send(property);
+};
+
+module.exports = {
+    home,
+    displayAllUnapprovedProperties
+};
