@@ -12,6 +12,6 @@ router.get('/file/:filename',download); //displaying file by specified filename
 
 router.post('/approved_property_upload',approvedPropertyUpload); //property data upload to approved properties collection
 
-router.post('/property_update',updateDetails); //updating property details
+router.post('/property_update',upload.single("file"),updateDetails); //updating property details
 
 module.exports = router;
