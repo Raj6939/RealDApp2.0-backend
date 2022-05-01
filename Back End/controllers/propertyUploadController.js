@@ -73,7 +73,7 @@ const propertyUpload = (req,res) => {
 
     const property = new rawPropertyModel({
         metamask_address,
-        prop_id,
+        // prop_id,
         prop_area,
         prop_house_no,
         prop_landmark,
@@ -96,18 +96,20 @@ const propertyUpload = (req,res) => {
 
 const approvedPropertyUpload = (req,res) => {
 
-    const metamask_address= req.body.metamask_address;
+  console.log(req.body.obj);
+
+    const metamask_address= req.body.obj.metamask_address;
     // const prop_id=req.body.prop_id;
-    const prop_area=req.body.prop_area;
-    const prop_house_no=req.body.prop_house_no;
-    const prop_landmark=req.body.prop_landmark;
-    const prop_city=req.body.prop_city;
-    const prop_state=req.body.prop_state;
-    const prop_price=req.body.prop_price;
-    const prop_document=req.body.prop_document;
-    const prop_surveyNumber=req.body.prop_surveyNumber;
-    const prop_approved = req.body.prop_approved;
-    const prop_reject = req.body.prop_reject;
+    const prop_area=req.body.obj.prop_area;
+    const prop_house_no=req.body.obj.prop_house_no;
+    const prop_landmark=req.body.obj.prop_landmark;
+    const prop_city=req.body.obj.prop_city;
+    const prop_state=req.body.obj.prop_state;
+    const prop_price=req.body.obj.prop_price;
+    const prop_document=req.body.obj.prop_document;
+    const prop_surveyNumber=req.body.obj.prop_surveyNumber;
+    const prop_approved = req.body.obj.prop_approved;
+    const prop_reject = req.body.obj.prop_reject;
 
     if(prop_reject==true){
       res.send("property rejected");
@@ -115,7 +117,7 @@ const approvedPropertyUpload = (req,res) => {
 
         const property = new propertyModel({
         metamask_address,
-        prop_id,
+        // prop_id,
         prop_area,
         prop_house_no,
         prop_landmark,
@@ -163,7 +165,7 @@ const updateDetails = async(req,res) => {
     const obj = JSON.parse(JSON.stringify(req.body));
 
     const metamask_address= obj.metamask_address;
-    const prop_id=obj.prop_id;
+    // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
     const prop_house_no=obj.prop_house_no;
     const prop_landmark=obj.prop_landmark;
