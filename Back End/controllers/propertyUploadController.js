@@ -94,7 +94,7 @@ const propertyUpload = (req,res) => {
     res.send("Hello World Post");
 };
 
-const approvedPropertyUpload = (req,res) => {
+const approvedPropertyUpload = async(req,res) => {
 
   console.log(req.body.obj);
 
@@ -130,14 +130,10 @@ const approvedPropertyUpload = (req,res) => {
         prop_reject
     });
 
-    property.save()
-        .then((result) => {
-            console.log(result);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-    res.send("property approved");
+   await property.save();
+        
+   await rawPropertyModel.deleteOne({metamask_address:metamask_address,prop_document:prop_document});
+   res.send("property approved");
 
     }
 }
