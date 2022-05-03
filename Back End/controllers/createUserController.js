@@ -30,10 +30,20 @@ const createUser = (req,res) => {
     res.send("Hello World Post");
 };
 
-const getUser = async(req,res) => {
+const getUserUnapproved = async(req,res) => {
     const {id} = req.params;
     const data = await userModel.findOne({metamask_address:id});
     const property = await rawPropertyModel.find({metamask_address:id})
+    const temp = await {...data['_doc'],properties:property}
+    console.log(temp);
+    console.log(property);
+    res.send(temp);
+};
+
+const getUserApproved = async(req,res) => {
+    const {id} = req.params;
+    const data = await userModel.findOne({metamask_address:id});
+    const property = await propertyModel.find({metamask_address:id})
     const temp = await {...data['_doc'],properties:property}
     console.log(temp);
     console.log(property);
@@ -42,5 +52,6 @@ const getUser = async(req,res) => {
 
 module.exports = {
     createUser,
-    getUser
+    getUserUnapproved,
+    getUserApproved
 };
