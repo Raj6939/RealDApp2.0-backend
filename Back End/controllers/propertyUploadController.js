@@ -10,7 +10,7 @@ const {
 } = require("multer-gridfs-storage");
 const GridFSBucket = require("mongodb").GridFSBucket;
 
-var fileName;
+var fileName=[];
 
 const dburl = process.env.DB_CONNECTION ;
 mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
@@ -33,15 +33,13 @@ mongoose.connection.on("connected", () => {
 const storage = new GridFsStorage({
     url: dburl,
     file: (req, file) => {
-      console.log("hi");
-      console.log(file);
       return new Promise((resolve, reject) => {
         crypto.randomBytes(16, (err, buf) => {
           if (err) {
             return reject(err);
           }
           const filename = buf.toString("hex") + path.extname(file.originalname);
-          fileName=filename;
+          fileName.push(filename);
           const fileInfo = {
             filename: filename,
             bucketName: "uploads"
@@ -59,6 +57,7 @@ const storage = new GridFsStorage({
 const propertyUpload = (req,res) => {
 
   const obj = JSON.parse(JSON.stringify(req.body));
+  console.log(fileName);
 
     const metamask_address= obj.metamask_address;
     // const prop_id=obj.prop_id;
@@ -68,8 +67,9 @@ const propertyUpload = (req,res) => {
     const prop_city=obj.prop_city;
     const prop_state=obj.prop_state;
     const prop_price=obj.prop_price;
-    const prop_document=fileName;
+    const prop_document=fileName.pop();
     const prop_surveyNumber=obj.prop_surveyNumber;
+    const prop_images = fileName;
 
     const property = new rawPropertyModel({
         metamask_address,
@@ -81,7 +81,8 @@ const propertyUpload = (req,res) => {
         prop_state,
         prop_price,
         prop_document,
-        prop_surveyNumber
+        prop_surveyNumber,
+        prop_images
     });
 
     property.save()
@@ -159,7 +160,9 @@ const download = async (req, res) => {
 const updateDetails = async(req,res) => {
 
     const obj = JSON.parse(JSON.stringify(req.body));
+    console.log(obj);
 
+    const _id = obj._id;
     const metamask_address= obj.metamask_address;
     // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
@@ -171,7 +174,8 @@ const updateDetails = async(req,res) => {
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
 
-    await rawPropertyModel.updateOne({metamask_address:metamask_address},{$set: {
+    await rawPropertyModel.updateOne({_id:_id},{$set: {
+      metamask_address:metamask_address,
       prop_area:prop_area,
       prop_house_no:prop_house_no,
       prop_landmark:prop_landmark,
@@ -183,11 +187,16 @@ const updateDetails = async(req,res) => {
     }});
 }
 
+// const approved_property_update = (req,res) => {
+
+// }
+
 module.exports = {
     propertyUpload,
     getproperty,
     approvedPropertyUpload,
     upload,
     download,
-    updateDetails
+    updateDetails,
+    approved_property_update
 };

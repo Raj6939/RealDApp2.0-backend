@@ -49,7 +49,11 @@ const propertySchema = new Schema({
     prop_reject:{
         type:Boolean,
         default:false
-    }
+    },
+    prop_images:{
+        type:[String],
+        required: true
+     }
 },{timestamps: true});
 
 const propertyModel = mongoose.model('property',propertySchema);

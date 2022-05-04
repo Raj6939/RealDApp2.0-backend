@@ -35,8 +35,6 @@ const getUserUnapproved = async(req,res) => {
     const data = await userModel.findOne({metamask_address:id});
     const property = await rawPropertyModel.find({metamask_address:id})
     const temp = await {...data['_doc'],properties:property}
-    console.log(temp);
-    console.log(property);
     res.send(temp);
 };
 
@@ -45,8 +43,6 @@ const getUserApproved = async(req,res) => {
     const data = await userModel.findOne({metamask_address:id});
     const property = await propertyModel.find({metamask_address:id})
     const temp = await {...data['_doc'],properties:property}
-    console.log(temp);
-    console.log(property);
     res.send(temp);
 }
 
