@@ -50,10 +50,6 @@ const propertySchema = new Schema({
         type:Boolean,
         default:false
     },
-    prop_images:{
-        type:[String],
-        required: true
-     }
 },{timestamps: true});
 
 const propertyModel = mongoose.model('property',propertySchema);

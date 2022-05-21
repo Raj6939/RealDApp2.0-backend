@@ -10,7 +10,7 @@ const {
 } = require("multer-gridfs-storage");
 const GridFSBucket = require("mongodb").GridFSBucket;
 
-var fileName=[];
+var fileName='';
 
 const dburl = process.env.DB_CONNECTION ;
 mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
@@ -39,7 +39,7 @@ const storage = new GridFsStorage({
             return reject(err);
           }
           const filename = buf.toString("hex") + path.extname(file.originalname);
-          fileName.push(filename);
+          fileName= filename;
           const fileInfo = {
             filename: filename,
             bucketName: "uploads"
@@ -57,8 +57,8 @@ const storage = new GridFsStorage({
 const propertyUpload = (req,res) => {
 
   const obj = JSON.parse(JSON.stringify(req.body));
-  console.log(fileName);
-
+  // console.log(fileName);
+    console.log(obj)
     const metamask_address= obj.metamask_address;
     // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
@@ -67,9 +67,9 @@ const propertyUpload = (req,res) => {
     const prop_city=obj.prop_city;
     const prop_state=obj.prop_state;
     const prop_price=obj.prop_price;
-    const prop_document=fileName.pop();
+    const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
-    const prop_images = fileName;
+
 
     const property = new rawPropertyModel({
         metamask_address,
@@ -82,7 +82,6 @@ const propertyUpload = (req,res) => {
         prop_price,
         prop_document,
         prop_surveyNumber,
-        prop_images
     });
 
     property.save()
