@@ -17,29 +17,18 @@ const userSchema = new Schema({
     email:{
         type:String,
         required:true
+    },
+    adharcardNo:{
+        type:String,
+        required:true
+    },
+    approved:{
+        type:Boolean,
+        default:false
     }
-    // address:{
-    //     type:String,
-    //     required:true
-    // },
-    // adharcardNo:{
-    //     type:String,
-    //     required:true
-    // },
-    // pancardNo:{
-    //     type:String,
-    //     required:true
-    // },
-    // adhar_hash:{
-    //     type:String,
-    //     required:true
-    // },
-    // pan_hash:{
-    //     type:String,
-    //     required:true
-    // }
 },{timestamps: true});
 
-const userModel = mongoose.model('users',userSchema);
+const approveduserModel = mongoose.model('approvedusers',userSchema);
+const unapproveduserModel = mongoose.model('unapprovedusers',userSchema);
 
-module.exports = userModel;
+module.exports = {approveduserModel,unapproveduserModel};

@@ -1,12 +1,12 @@
 const express = require('express');
-const {createUser, getUserUnapproved,getUserApproved} = require('../controllers/createUserController');
+const {createUser, getUserApproved, approve_user} = require('../controllers/createUserController');
 const router = express.Router();
 
 router.post('/create_user',createUser);
 
-router.get('/get_user_unapproved/:id',getUserUnapproved);
+router.get('/get_user_approved/:id',getUserApproved);
 
-router.get('/get_user_approved/:id',getUserApproved)
+router.post('/approve_user_moderator/:id', approve_user);
 
 
 

@@ -1,4 +1,4 @@
-const {propertyModel,rawPropertyModel} = require('../models/propertySchema.js');
+const propertyModel = require('../models/propertySchema.js');
 const fs = require('fs');
 const multer = require("multer");
 const crypto = require("crypto");
@@ -70,8 +70,7 @@ const propertyUpload = (req,res) => {
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
 
-
-    const property = new rawPropertyModel({
+    const property = new propertyModel({
         metamask_address,
         // prop_id,
         prop_area,
@@ -94,50 +93,6 @@ const propertyUpload = (req,res) => {
     res.send("Hello World Post");
 };
 
-const approvedPropertyUpload = async(req,res) => {
-
-  console.log(req.body.obj);
-
-    const metamask_address= req.body.obj.metamask_address;
-    // const prop_id=req.body.prop_id;
-    const prop_area=req.body.obj.prop_area;
-    const prop_house_no=req.body.obj.prop_house_no;
-    const prop_landmark=req.body.obj.prop_landmark;
-    const prop_city=req.body.obj.prop_city;
-    const prop_state=req.body.obj.prop_state;
-    const prop_price=req.body.obj.prop_price;
-    const prop_document=req.body.obj.prop_document;
-    const prop_surveyNumber=req.body.obj.prop_surveyNumber;
-    const prop_approved = req.body.obj.prop_approved;
-    const prop_reject = req.body.obj.prop_reject;
-
-    if(prop_reject==true){
-      res.send("property rejected");
-    }else {
-
-        const property = new propertyModel({
-        metamask_address,
-        // prop_id,
-        prop_area,
-        prop_house_no,
-        prop_landmark,
-        prop_city,
-        prop_state,
-        prop_price,
-        prop_document,
-        prop_surveyNumber,
-        prop_approved,
-        prop_reject
-    });
-
-   await property.save();
-        
-   await rawPropertyModel.deleteOne({metamask_address:metamask_address,prop_document:prop_document});
-   res.send("property approved");
-
-    }
-}
-
 const getproperty = async(req,res) => {
     const data = await propertyModel.find();
     res.send(data);
@@ -156,46 +111,9 @@ const download = async (req, res) => {
   })
 };
 
-const updateDetails = async(req,res) => {
-
-    const obj = JSON.parse(JSON.stringify(req.body));
-    console.log(obj);
-
-    const _id = obj._id;
-    const metamask_address= obj.metamask_address;
-    // const prop_id=obj.prop_id;
-    const prop_area=obj.prop_area;
-    const prop_house_no=obj.prop_house_no;
-    const prop_landmark=obj.prop_landmark;
-    const prop_city=obj.prop_city;
-    const prop_state=obj.prop_state;
-    const prop_price=obj.prop_price;
-    const prop_document=fileName;
-    const prop_surveyNumber=obj.prop_surveyNumber;
-
-    await rawPropertyModel.updateOne({_id:_id},{$set: {
-      metamask_address:metamask_address,
-      prop_area:prop_area,
-      prop_house_no:prop_house_no,
-      prop_landmark:prop_landmark,
-      prop_city:prop_city,
-      prop_state:prop_state,
-      prop_price:prop_price,
-      prop_document:prop_document,
-      prop_surveyNumber:prop_surveyNumber
-    }});
-}
-
-// const approved_property_update = (req,res) => {
-
-// }
-
 module.exports = {
     propertyUpload,
     getproperty,
-    approvedPropertyUpload,
     upload,
-    download,
-    updateDetails,
-    approved_property_update
+    download
 };

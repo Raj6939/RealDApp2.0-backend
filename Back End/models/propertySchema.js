@@ -41,21 +41,9 @@ const propertySchema = new Schema({
     metamask_address:{
         type:String,
         required:true
-    },
-    prop_approved:{
-        type:Boolean,
-        default:false
-    },
-    prop_reject:{
-        type:Boolean,
-        default:false
-    },
+    }
 },{timestamps: true});
 
-const propertyModel = mongoose.model('property',propertySchema);
-const rawPropertyModel = mongoose.model('unapprovedProperty',propertySchema);
+const propertyModel = mongoose.model('ExistingDB',propertySchema);
 
-module.exports = {
-    propertyModel,
-    rawPropertyModel
-};
+module.exports = propertyModel;
