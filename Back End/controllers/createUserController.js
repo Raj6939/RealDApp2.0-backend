@@ -1,7 +1,7 @@
 const {approveduserModel,unapproveduserModel} = require('../models/userSchema');
 const propertyModel = require('../models/propertySchema');
-const web3 = require('web3');
-
+const Web3 = require('web3');
+const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
 const createUser = (req,res) => {
 
     const metamask_address= req.body.metamask_address;
@@ -57,15 +57,18 @@ const getUserApproved = async(req,res) => {
 }
 
 const verifySign= async(req,res) => {
-    const adharcardNo = req.body.adharcardNo;
-    const signature = req.body.signature;
-    const address = await web3.eth.personal.ecRecover(adharcardNo,signature);
+    const adharcardNo = req.body.msg;
+    const signature = req.body.signature_data;
+    const address = await web3.eth.accounts.recover(adharcardNo, signature);
+    console.log(address)
     const userData = await approveduserModel.findOne({metamask_address:address});
-    res.send(200);
+    console.log(userData)
+    res.send(userData);
 }
 
 module.exports = {
     createUser,
     getUserApproved,
-    approve_user
+    approve_user,
+    verifySign
 };
