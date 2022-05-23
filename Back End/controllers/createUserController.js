@@ -8,7 +8,7 @@ const createUser = (req,res) => {
     const name=req.body.name;
     const email=req.body.email;
     const mobile = req.body.mobile;
-    const adharcardNo = req.body.adharcardno;
+    const adharcardNo = req.body.adharcardNo;
     const signature = req.body.signature;
 
     const user = new unapproveduserModel({
