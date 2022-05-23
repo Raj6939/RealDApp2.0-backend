@@ -1,5 +1,6 @@
 const {approveduserModel,unapproveduserModel} = require('../models/userSchema');
-const {propertyModel,rawPropertyModel} = require('../models/propertySchema');
+const propertyModel = require('../models/propertySchema');
+const web3 = require('web3');
 
 const createUser = (req,res) => {
 
@@ -8,6 +9,7 @@ const createUser = (req,res) => {
     const email=req.body.email;
     const mobile = req.body.mobile;
     const adharcardNo = req.body.adharcardno;
+    const signature = req.body.signature;
 
     const user = new unapproveduserModel({
         metamask_address,
@@ -15,6 +17,7 @@ const createUser = (req,res) => {
         mobile,
         email,
         adharcardNo,
+        signature
     });
 
     user.save()
@@ -37,6 +40,7 @@ const approve_user = async(req,res) => {
         email:data.email,
         mobile:data.mobile,
         adharcardNo:data.adharcardNo,
+        signature:data.signature,
         approved:data.approved
     });
     await user.save();
@@ -50,6 +54,14 @@ const getUserApproved = async(req,res) => {
     // const property = await propertyModel.find({metamask_address:id})
     // const temp = await {...data['_doc'],properties:property}
     res.send(data);
+}
+
+const verifySign= async(req,res) => {
+    const adharcardNo = req.body.adharcardNo;
+    const signature = req.body.signature;
+    const address = await web3.eth.personal.ecRecover(adharcardNo,signature);
+    const userData = await approveduserModel.findOne({metamask_address:address});
+    res.send(200);
 }
 
 module.exports = {

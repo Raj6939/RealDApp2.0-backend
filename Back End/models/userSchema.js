@@ -25,6 +25,9 @@ const userSchema = new Schema({
     approved:{
         type:Boolean,
         default:false
+    },
+    signature:{
+        type:String
     }
 },{timestamps: true});
 
