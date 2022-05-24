@@ -9,7 +9,6 @@ const createUser = (req,res) => {
     const email=req.body.email;
     const mobile = req.body.mobile;
     const adharcardNo = req.body.adharcardNo;
-    const signature = req.body.signature;
 
     const user = new userModel({
         metamask_address,
