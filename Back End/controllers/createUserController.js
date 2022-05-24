@@ -30,7 +30,7 @@ const createUser = (req,res) => {
 
 const approve_user = async(req,res) => {
     const id = req.params.id; 
-    if(req.body.obj.approved){
+    if(req.body.approved){
         await userModel.updateOne({metamask_address:id},{$set: {approved:true}});
         res.sendStatus(200);
     }else{
