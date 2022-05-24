@@ -31,7 +31,6 @@ const userSchema = new Schema({
     }
 },{timestamps: true});
 
-const approveduserModel = mongoose.model('approvedusers',userSchema);
-const unapproveduserModel = mongoose.model('unapprovedusers',userSchema);
+const userModel = mongoose.model('users',userSchema);
 
-module.exports = {approveduserModel,unapproveduserModel};
+module.exports = userModel;

@@ -1,4 +1,4 @@
-const {approveduserModel,unapproveduserModel} = require('../models/userSchema');
+const userModel = require('../models/userSchema');
 const propertyModel = require('../models/propertySchema');
 const Web3 = require('web3');
 const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
@@ -11,13 +11,12 @@ const createUser = (req,res) => {
     const adharcardNo = req.body.adharcardNo;
     const signature = req.body.signature;
 
-    const user = new unapproveduserModel({
+    const user = new userModel({
         metamask_address,
         name,
         mobile,
         email,
-        adharcardNo,
-        signature
+        adharcardNo
     });
 
     user.save()
@@ -32,19 +31,12 @@ const createUser = (req,res) => {
 
 const approve_user = async(req,res) => {
     const id = req.params.id; 
-    const data = await unapproveduserModel.findOne({metamask_address:id})
-    data.approved = true;
-    const user = new approveduserModel({
-        metamask_address:data.metamask_address,
-        name:data.name,
-        email:data.email,
-        mobile:data.mobile,
-        adharcardNo:data.adharcardNo,
-        signature:data.signature,
-        approved:data.approved
-    });
-    await user.save();
-    await unapproveduserModel.deleteOne({metamask_address:id});
+    await userModel.updateOne({metamask_address:id},{$set: {approved:true}});
+    res.sendStatus(200);
+}
+
+const unapproved_users = async(req,res) => {
+    const data = await userModel.find({approved:false});
     res.send(data);
 }
 
@@ -70,5 +62,6 @@ module.exports = {
     createUser,
     getUserApproved,
     approve_user,
-    verifySign
+    verifySign,
+    unapproved_users
 };
