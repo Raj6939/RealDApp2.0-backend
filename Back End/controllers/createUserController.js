@@ -31,8 +31,13 @@ const createUser = (req,res) => {
 
 const approve_user = async(req,res) => {
     const id = req.params.id; 
-    await userModel.updateOne({metamask_address:id},{$set: {approved:true}});
-    res.sendStatus(200);
+    if(req.body.obj.approved){
+        await userModel.updateOne({metamask_address:id},{$set: {approved:true}});
+        res.sendStatus(200);
+    }else{
+        res.send("Not approved")
+    }
+    
 }
 
 const unapproved_users = async(req,res) => {
@@ -42,7 +47,7 @@ const unapproved_users = async(req,res) => {
 
 const getUserApproved = async(req,res) => {
     const id = req.params.id;
-    const data = await approveduserModel.findOne({metamask_address:id});
+    const data = await userModel.findOne({metamask_address:id});
     // const property = await propertyModel.find({metamask_address:id})
     // const temp = await {...data['_doc'],properties:property}
     res.send(data);
@@ -53,7 +58,7 @@ const verifySign= async(req,res) => {
     const signature = req.body.signature_data;
     const address = await web3.eth.accounts.recover(adharcardNo, signature);
     console.log(address)
-    const userData = await approveduserModel.findOne({metamask_address:address});
+    const userData = await userModel.findOne({metamask_address:address});
     console.log(userData)
     res.send(userData);
 }
