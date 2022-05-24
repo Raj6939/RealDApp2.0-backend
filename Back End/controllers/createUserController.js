@@ -46,9 +46,7 @@ const unapproved_users = async(req,res) => {
 
 const getUserApproved = async(req,res) => {
     const id = req.params.id;
-    const data = await userModel.findOne({metamask_address:id});
-    // const property = await propertyModel.find({metamask_address:id})
-    // const temp = await {...data['_doc'],properties:property}
+    const data = await propertyModel.find({metamask_address:id});
     res.send(data);
 }
 

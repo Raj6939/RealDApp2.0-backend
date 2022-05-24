@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
-    // prop_id:{
-    //     type:Number,
-    //     required:true
-    // },
+    prop_id:{
+        type:Number,
+        required:false
+    },
     prop_area:{
         type:String,
         required:true

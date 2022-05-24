@@ -57,10 +57,7 @@ const storage = new GridFsStorage({
 const propertyUpload = (req,res) => {
 
   const obj = JSON.parse(JSON.stringify(req.body));
-  // console.log(fileName);
-    console.log(obj)
     const metamask_address= obj.metamask_address;
-    // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
     const prop_house_no=obj.prop_house_no;
     const prop_landmark=obj.prop_landmark;
@@ -72,7 +69,6 @@ const propertyUpload = (req,res) => {
 
     const property = new propertyModel({
         metamask_address,
-        // prop_id,
         prop_area,
         prop_house_no,
         prop_landmark,
