@@ -40,6 +40,10 @@ const propertySchema = new Schema({
     },
     metamask_address:{
         type:String,
+        required:false
+    },
+    adharNo:{
+        type:String,
         required:true
     }
 },{timestamps: true});
