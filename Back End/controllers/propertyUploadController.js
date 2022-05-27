@@ -63,7 +63,6 @@ const propertyUpload = (req,res) => {
     const prop_landmark=obj.prop_landmark;
     const prop_city=obj.prop_city;
     const prop_state=obj.prop_state;
-    const prop_price=obj.prop_price;
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
     const adharNo = obj.adharNo;
@@ -74,7 +73,6 @@ const propertyUpload = (req,res) => {
         prop_landmark,
         prop_city,
         prop_state,
-        prop_price,
         prop_document,
         prop_surveyNumber,
         adharNo
@@ -89,6 +87,18 @@ const propertyUpload = (req,res) => {
         })
     res.send("Hello World Post");
 };
+
+const setprice = async(req,res) => {
+
+  const id = req.params.id;
+  const price = req.body.prop_price;
+  const data = await propertyModel.updateOne({_id:id},{$set : {prop_price:price}}).then((result) => {
+      res.send(true);
+    }).catch((err) => {
+      res.send(false);
+    });
+
+}
 
 const getproperty = async(req,res) => {
     const data = await propertyModel.find();
@@ -112,5 +122,6 @@ module.exports = {
     propertyUpload,
     getproperty,
     upload,
-    download
+    download,
+    setprice
 };

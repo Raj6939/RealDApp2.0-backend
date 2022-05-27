@@ -28,7 +28,7 @@ const propertySchema = new Schema({
     },
     prop_price:{
         type:Number,
-        required:true
+        required:false
     },
     prop_document:{
         type:String,

@@ -6,6 +6,8 @@ router.post('/property_upload',properties.upload.single("file"),properties.prope
 
 router.get('/property_get',properties.getproperty);  //sending approved data to the user
 
+router.post('/set_prop_price/:id',properties.setprice); //sets price of the properties
+
 router.get('/file/:filename',properties.download); //displaying file by specified filename
 
 module.exports = router;
