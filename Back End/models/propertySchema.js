@@ -45,9 +45,14 @@ const propertySchema = new Schema({
     adharNo:{
         type:String,
         required:true
+    },
+    deployed: {
+        type:Boolean,
+        required:true
     }
 },{timestamps: true});
 
 const propertyModel = mongoose.model('ExistingDB',propertySchema);
+const newpropertyModel = mongoose.model('Nfts',propertySchema);
 
-module.exports = propertyModel;
+module.exports = {propertyModel,newpropertyModel};

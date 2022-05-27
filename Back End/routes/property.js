@@ -10,4 +10,6 @@ router.post('/set_prop_price/:id',properties.setprice); //sets price of the prop
 
 router.get('/file/:filename',properties.download); //displaying file by specified filename
 
+router.post('/addnft/:id',properties.addnft);  //adding property details as nft in mongodb 
+
 module.exports = router;

@@ -1,4 +1,4 @@
-const propertyModel = require('../models/propertySchema.js');
+const {propertyModel,newpropertyModel} = require('../models/propertySchema.js');
 const fs = require('fs');
 const multer = require("multer");
 const crypto = require("crypto");
@@ -66,6 +66,7 @@ const propertyUpload = (req,res) => {
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
     const adharNo = obj.adharNo;
+    const deployed = false;
 
     const property = new propertyModel({
         prop_area,
@@ -75,7 +76,8 @@ const propertyUpload = (req,res) => {
         prop_state,
         prop_document,
         prop_surveyNumber,
-        adharNo
+        adharNo,
+        deployed
     });
 
     property.save()
@@ -97,6 +99,25 @@ const setprice = async(req,res) => {
     }).catch((err) => {
       res.send(false);
     });
+
+}
+
+const addnft = async(req,res) => {
+  const id = req.params.id;
+  const result = await propertyModel.updateOne({_id:id},{$set:{deployed:true}});
+  const data = await propertyModel.findOne({_id:id});
+  const nft = new newpropertyModel({
+    prop_id : req.body.id,
+    prop_area : data.prop_area,
+    prop_house_no : data.prop_house_no,
+    prop_landmark : data.prop_landmark,
+    prop_city : data.prop_city,
+    prop_state : data.prop_state,
+    prop_document : data.prop_document,
+    prop_surveyNumber : data.prop_surveyNumber,
+    adharNo : data.adharNo,
+    deployed : data.deployed
+  })
 
 }
 
@@ -123,5 +144,6 @@ module.exports = {
     getproperty,
     upload,
     download,
-    setprice
+    setprice,
+    addnft
 };
