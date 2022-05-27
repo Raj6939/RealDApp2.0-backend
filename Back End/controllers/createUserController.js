@@ -30,11 +30,19 @@ const createUser = (req,res) => {
 
 const approve_user = async(req,res) => {
     const id = req.params.id; 
-    if(req.body.obj.approved){
-        await userModel.updateOne({metamask_address:id},{$set: {approved:true}}); //approving user by moderator
+    if(req.body.obj.approved==true){
         const data = await userModel.findOne({metamask_address:id}); //finding approved user details
-        await propertyModel.updateMany({adharNo : data.adharcardNo},{$set: {metamask_address:id}}); //adding metamask address to that respective user properties
+        const check = await propertyModel.find({adharNo:data.adharcardNo})
+        console.log(check)
+        if(check.length>0){
+            await userModel.updateOne({metamask_address:id},{$set: {approved:true}}); //approving user by moderator
+            await propertyModel.updateMany({adharNo : data.adharcardNo},{$set: {metamask_address:id}}); //adding metamask address to that respective user properties
         res.sendStatus(200);
+        }
+        else{
+            res.send("Properties Not Found");
+        }
+        
     }else{
         res.send("Not approved")
     }

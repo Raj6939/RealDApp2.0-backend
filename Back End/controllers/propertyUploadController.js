@@ -93,7 +93,7 @@ const propertyUpload = (req,res) => {
 const setprice = async(req,res) => {
 
   const id = req.params.id;
-  const price = req.body.prop_price;
+  const price = req.body.obj.prop_price;
   const data = await propertyModel.updateOne({_id:id},{$set : {prop_price:price}}).then((result) => {
       res.send(true);
     }).catch((err) => {
