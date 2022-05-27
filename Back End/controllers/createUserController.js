@@ -1,5 +1,5 @@
 const userModel = require('../models/userSchema');
-const propertyModel = require('../models/propertySchema');
+const {propertyModel} = require('../models/propertySchema');
 const Web3 = require('web3');
 const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
 const createUser = (req,res) => {

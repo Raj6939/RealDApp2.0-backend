@@ -107,7 +107,7 @@ const addnft = async(req,res) => {
   const result = await propertyModel.updateOne({_id:id},{$set:{deployed:true}});
   const data = await propertyModel.findOne({_id:id});
   const nft = new newpropertyModel({
-    prop_id : req.body.id,
+    prop_id : req.body.obj,
     prop_area : data.prop_area,
     prop_house_no : data.prop_house_no,
     prop_landmark : data.prop_landmark,
@@ -118,6 +118,8 @@ const addnft = async(req,res) => {
     adharNo : data.adharNo,
     deployed : data.deployed
   })
+  nft.save();
+  res.send(nft);
 
 }
 
