@@ -36,7 +36,7 @@ const storage = new GridFsStorage({
     url: dburl,
     file: (req, file) => {
       return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
+        crypto.randomBytes(16, async(err, buf) => {
           if (err) {
             return reject(err);
           }
