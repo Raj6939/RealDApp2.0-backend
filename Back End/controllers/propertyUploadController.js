@@ -2,6 +2,8 @@ const {propertyModel,newpropertyModel} = require('../models/propertySchema.js');
 const fs = require('fs');
 const multer = require("multer");
 const crypto = require("crypto");
+const IPFS = require('ipfs-api');
+const ipfs = new IPFS({ host:'ipfs.infura.io', port:5001, protocol:'https' });
 const path = require("path");
 const mongoose = require('mongoose');
 require('dotenv/config'); 
@@ -39,7 +41,8 @@ const storage = new GridFsStorage({
             return reject(err);
           }
           const filename = buf.toString("hex") + path.extname(file.originalname);
-          fileName= filename;
+          const result = await ipfs.files.add(buf);
+          fileName= result[0].hash;
           const fileInfo = {
             filename: filename,
             bucketName: "uploads"
