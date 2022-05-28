@@ -3,19 +3,20 @@ const {propertyModel} = require('../models/propertySchema');
 const Web3 = require('web3');
 const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
 const createUser = (req,res) => {
-
+    console.log(req.body)
     const metamask_address= req.body.metamask_address;
     const name=req.body.name;
     const email=req.body.email;
     const mobile = req.body.mobile;
     const adharcardNo = req.body.adharcardNo;
-
+    const signUpsignature = req.body.signUpsignature
     const user = new userModel({
         metamask_address,
         name,
         mobile,
         email,
-        adharcardNo
+        adharcardNo,
+        signUpsignature
     });
 
     user.save()

@@ -25,7 +25,11 @@ const userSchema = new Schema({
     approved:{
         type:Boolean,
         default:false
-    }
+    },
+    signUpsignature:{
+        type:String,
+        required:true
+    },
 },{timestamps: true});
 
 const userModel = mongoose.model('users',userSchema);
