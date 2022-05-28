@@ -14,7 +14,7 @@ var transporter = nodemailer.createTransport({
 const propertytransfer = async(req,res) => {
     var mailOptions = {
   from: 'rakeshvanga2000@gmail.com',
-  to: req.body.mail,
+  to: req.body.email,
   subject: 'Someone want to buy your project',
   text: '<button><a href="https://localhost:8080/">Click here</a></button>'
 };
