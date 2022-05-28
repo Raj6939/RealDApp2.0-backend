@@ -1,15 +1,31 @@
-const propertyModel = require('../models/propertySchema.js');
+const {propertyModel} = require('../models/propertySchema.js');
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'rakeshvanga2000@gmail.com',
+      pass: 'Xyzzspoon@123'
+    }
+  })
+
+
 
 const propertytransfer = async(req,res) => {
-
-    const update = await propertyModel.updateOne(
-        { $and: [{"prop_id": req.body.prop_id}, {"metamask_address": req.body.to}] },
-        { $set: {"metamask_address": req.body.from} },
-    );
-
-    res.send("ok");
+    var mailOptions = {
+  from: 'rakeshvanga2000@gmail.com',
+  to: req.body.mail,
+  subject: 'Someone want to buy your project',
+  text: '<button><a href="https://localhost:8080/">Click here</a></button>'
 };
 
-module.exports = {
-    propertytransfer
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});
 };
+
+module.exports = propertytransfer;
