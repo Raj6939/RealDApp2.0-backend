@@ -86,11 +86,13 @@ const propertyUpload = (req,res) => {
     property.save()
         .then((result) => {
             console.log(result);
+            res.send(true);
         })
         .catch((err) => {
             console.log(err);
+            res.send(false);
         })
-    res.send("Hello World Post");
+    
 };
 
 const setprice = async(req,res) => {
@@ -119,6 +121,7 @@ const addnft = async(req,res) => {
     prop_document : data.prop_document,
     prop_surveyNumber : data.prop_surveyNumber,
     adharNo : data.adharNo,
+    metamask_address : data.metamask_address,
     deployed : data.deployed
   })
   nft.save();

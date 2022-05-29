@@ -22,11 +22,13 @@ const createUser = (req,res) => {
     user.save()
         .then((result) => {
             console.log(result);
+            res.send(true);
         })
         .catch((err) => {
             console.log(err);
+            res.send(false);
         })
-    res.send("Hello World Post");
+    
 };
 
 const approve_user = async(req,res) => {
@@ -64,11 +66,13 @@ const getUserApproved = async(req,res) => {
 const verifySign= async(req,res) => {
     const adharcardNo = req.body.msg;
     const signature = req.body.signature_data;
-    const address = await web3.eth.accounts.recover(adharcardNo, signature);
-    console.log(address)
-    const userData = await userModel.findOne({metamask_address:address});
-    console.log(userData)
-    res.send(userData);
+    const userData = await userModel.findOne({adharcardNo:adharcardNo});
+    if(userData.signUpsignature == signature){
+        res.send(userData);
+    }else {
+        res.send("No user found");
+    }
+    
 }
 
 module.exports = {
