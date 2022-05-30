@@ -15,10 +15,10 @@ var transporter = nodemailer.createTransport({
 
 
 const propertytransfer = async(req,res) => {
-  const buyer_metamask = req.body.buyer_metamask_address;
-  const buyer_email = req.body.buyer_email;
-  const prop_id = req.body.prop_id;
-  const seller_details = await userModel.find({metamask_address:req.body.seller_metamask_address});
+  const buyer_metamask = req.body.obj.buyer_metamask_address;
+  const buyer_email = req.body.obj.buyer_email;
+  const prop_id = req.body.obj.prop_id;
+  const seller_details = await userModel.find({metamask_address:req.body.obj.seller_metamask_address});
   const notification = new transferPropertyModel({
     buyer_metamask_address:buyer_metamask,
     seller_metamask_address:seller_details[0].metamask_address,
@@ -126,7 +126,19 @@ const property_approved_buyer = async(req,res) => {
     
 }
 
+const sendNotifications = async(req,res) => {
+    const address = req.params.metamask_address;
+    const data = await transferPropertyModel.find({seller_metamask_address:address});
+    console.log(data);
+    if(data==null){
+        res.send("No Notifications");
+    }else{
+        res.send(data);
+    }
+}
+
 module.exports = {
     propertytransfer,
-    property_approved_buyer
+    property_approved_buyer,
+    sendNotifications
 };

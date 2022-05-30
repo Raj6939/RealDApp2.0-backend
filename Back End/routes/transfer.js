@@ -1,9 +1,11 @@
 const express = require('express');
-const {propertytransfer,property_approved_buyer} = require('../controllers/transferPropertyController.js');
+const transfer = require('../controllers/transferPropertyController.js');
 const router = express.Router();
 
-router.post('/transfer_property',propertytransfer);
+router.post('/transfer_property',transfer.propertytransfer);
 
-router.post('/property_approval',property_approved_buyer);
+router.post('/property_approval',transfer.property_approved_buyer);
+
+router.get('/notifications/:metamask_address',transfer.sendNotifications);
 
 module.exports = router;
