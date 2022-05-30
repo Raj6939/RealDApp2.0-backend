@@ -121,6 +121,7 @@ const addnft = async(req,res) => {
     prop_document : data.prop_document,
     prop_surveyNumber : data.prop_surveyNumber,
     adharNo : data.adharNo,
+    prop_price : data.prop_price, 
     metamask_address : data.metamask_address,
     deployed : data.deployed
   })
