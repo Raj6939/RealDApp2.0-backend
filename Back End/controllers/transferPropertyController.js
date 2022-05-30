@@ -1,4 +1,5 @@
 const {propertyModel} = require('../models/propertySchema.js');
+const {transferPropertyModel} = require("../models/transferpropertySchema.js");
 var nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport({
