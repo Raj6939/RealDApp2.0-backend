@@ -21,6 +21,11 @@ const transferPropertySchema = new Schema({
     prop_id:{
         type:Number,
         required:true
+    },
+    approved_status:{
+        type:Boolean,
+        required:false,
+        default:false
     }
     
 },{timestamps: true});

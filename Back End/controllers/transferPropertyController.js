@@ -122,4 +122,11 @@ const propertytransfer = async(req,res) => {
 res.send("ok");
 };
 
-module.exports = propertytransfer;
+const property_approved_buyer = async(req,res) => {
+    
+}
+
+module.exports = {
+    propertytransfer,
+    property_approved_buyer
+};
