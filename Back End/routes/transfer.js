@@ -8,6 +8,6 @@ router.post('/property_approval',transfer.property_approved_buyer);
 
 router.get('/seller_notifications/:metamask_address',transfer.sendSellerNotifications);
 
-route.get('/buyer_notifications/:metamask_address',transfer.sendBuyerNotifications);
+router.get('/buyer_notifications/:metamask_address',transfer.sendBuyerNotifications);
 
 module.exports = router;
