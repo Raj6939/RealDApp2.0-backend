@@ -53,14 +53,13 @@ const storage = new GridFsStorage({
     }
   });
   
-  const upload = multer({
+const upload = multer({
     storage
-  });
+});
 
 const propertyUpload = (req,res) => {
 
   const obj = JSON.parse(JSON.stringify(req.body));
-    // const metamask_address= obj.metamask_address;
     const prop_area=obj.prop_area;
     const prop_house_no=obj.prop_house_no;
     const prop_landmark=obj.prop_landmark;
@@ -131,8 +130,15 @@ const addnft = async(req,res) => {
 
 }
 
-const getproperty = async(req,res) => {
-    const data = await propertyModel.find();
+const getExistingDBProperty = async(req,res) => {
+    const metamask_address = req.params.metamask_address;
+    const data = await propertyModel.find({metamask_address:metamask_address});
+    res.send(data);
+}
+
+const getDeployedProperties = async(req,res) => {
+    const metamask_address = req.params.metamask_address;
+    const data = await newpropertyModel.find({metamask_address:metamask_address});
     res.send(data);
 }
 
@@ -151,7 +157,8 @@ const download = async (req, res) => {
 
 module.exports = {
     propertyUpload,
-    getproperty,
+    getExistingDBProperty,
+    getDeployedProperties,
     upload,
     download,
     setprice,

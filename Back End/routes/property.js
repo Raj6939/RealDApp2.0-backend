@@ -4,7 +4,9 @@ const router = express.Router();
 
 router.post('/property_upload',properties.upload.single("file"),properties.propertyUpload); //property data upload to unapproved properties collection
 
-router.get('/property_get',properties.getproperty);  //sending approved data to the user
+router.get('/existing_property_get/:metamask_address',properties.getExistingDBProperty);  //sending existingDB data to the user
+
+router.get('/deployed_property_get:/metamask_address',properties.getDeployedProperties); //sending nfts or deployed properties to the user
 
 router.post('/set_prop_price/:id',properties.setprice); //sets price of the properties
 

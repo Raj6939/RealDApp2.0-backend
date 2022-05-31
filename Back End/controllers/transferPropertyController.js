@@ -1,5 +1,5 @@
-const {propertyModel} = require('../models/propertySchema.js');
-const transferPropertyModel = require('../models/transferpropertySchema.js');
+const {propertyModel, newpropertyModel} = require('../models/propertySchema.js');
+const {sellPropertyModel, buyPropertyModel, notification} = require('../models/transferpropertySchema.js');
 const userModel = require('../models/userSchema'); 
 const html = require('./email.js');
 var nodemailer = require('nodemailer');
@@ -16,13 +16,15 @@ var transporter = nodemailer.createTransport({
 
 
 
-const propertytransfer = async(req,res) => {
+const requestToPropertytransfer = async(req,res) => {
+
+    console.log(req.body);
   const buyer_metamask = req.body.obj.buyer_metamask_address;
-  const buyer_email = req.body.obj.buyer_email;
+  const buyer_email = req.body.obj.buyer_email; 
   const buyer_name = req.body.obj.buyer_name;
   const prop_id = req.body.obj.prop_id;
   const seller_details = await userModel.find({metamask_address:req.body.obj.seller_metamask_address});
-  const notification = new transferPropertyModel({
+  const sellproperty = new sellPropertyModel({
     buyer_metamask_address:buyer_metamask,
     seller_metamask_address:seller_details[0].metamask_address,
     buyer_email:buyer_email,
@@ -112,7 +114,7 @@ const propertytransfer = async(req,res) => {
     </html>`
   };
 
-  notification.save();
+  sellproperty.save();
 
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
@@ -127,14 +129,128 @@ res.send("ok");
 };
 
 const property_approved_buyer = async(req,res) => {
-    const prop_id = req.body.obj.prop_id;
-    await transferPropertyModel.updateOne({prop_id:prop_id},{$set:{approved_status:true}});
+    const _id = req.body.id;
+    const data = await sellPropertyModel.findOne({_id:_id});
+    const raw = await notification.findOne({prop_id:data.prop_id});
+    console.log(raw);
+    if(raw!=null){
+        if(raw.approved_status==true){
+            res.send(false);
+        } 
+    }
+    else{
+        await sellPropertyModel.updateOne({_id:_id},{$set:{approved_status:true}});
+        console.log(data);
+    const buyProperty = new buyPropertyModel({
+        buyer_metamask_address:data.buyer_metamask_address,
+        seller_metamask_address:data.seller_metamask_address,
+        buyer_email:data.buyer_email,
+        buyer_name:data.buyer_name,
+        seller_email:data.seller_email,
+        prop_id:data.prop_id,
+        approved_status:true
+    });
+
+    const notify = new notification({
+        prop_id:data.prop_id,
+        approved_status:true
+    })
+    
+    await buyProperty.save();
+    await notify.save();
+
+    var mailOptions = {
+        from: 'rakeshvanga2000@gmail.com',
+        to: data.buyer_email,
+        subject: 'Seller approved your interested property',
+        text: 'Now you can buy it from Real DApp platform'
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      
+      });
+
+    res.send(true);
+    }
+    
+}
+
+const transferProperty = async(req,res) => {
+    const prop_id = req.body.prop_id;
+    const to = req.body.buyer;
+
+    const data = await userModel.findOne({metamask_address:to});
+    console.log(data);
+    await newpropertyModel.updateOne({prop_id:prop_id},{metamask_address:to, adharNo:data.adharcardNo});
+    await sellPropertyModel.deleteMany({prop_id:prop_id});
+    await buyPropertyModel.deleteMany({prop_id:prop_id});
+    await notification.deleteOne({prop_id:prop_id});
+
+    var mailOptions = {
+        from: 'rakeshvanga2000@gmail.com',
+        to: data.email,
+        subject: 'Funds credited to your account',
+        text: 'Your property is transfered to buyers account and funds are credited please check the metamask wallet'
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      
+      });
+
+    res.send(true);
+}
+
+const rejectApproval = async(req,res) => {
+    const _id = req.body.id;
+    const data = await sellPropertyModel.find({_id:_id});
+    console.log(data);
+    await sellPropertyModel.updateOne({_id:_id},{$set:{approved_status:false}});
+    await buyPropertyModel.deleteOne({prop_id:data[0].prop_id});
+    await notification.deleteOne({prop_id:data[0].prop_id});
+
+    var mailOptions = {
+        from: 'rakeshvanga2000@gmail.com',
+        to: data[0].buyer_email,
+        subject: 'Seller rejected your interested property',
+        text: 'Wait for some time'
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      
+      });
+
     res.send(true);
 }
 
 const sendSellerNotifications = async(req,res) => {
     const address = req.params.metamask_address;
-    const data = await transferPropertyModel.find({seller_metamask_address:address});
+    const data = await sellPropertyModel.find({seller_metamask_address:address});
+    console.log(data);
+    if(data==null){
+        res.send("No Notifications");
+    }else{
+        res.send(data);
+    }
+}
+
+const sendBuyerNotifications = async(req,res) => {
+    const address = req.params.metamask_address;
+    const data = await buyPropertyModel.find({buyer_metamask_address:address});
     console.log(data);
     if(data==null){
         res.send("No Notifications");
@@ -165,21 +281,14 @@ const getRealTimeEthers = async(req,res) => {
 
 }
 
-const sendBuyerNotifications = async(req,res) => {
-    const address = req.params.metamask_address;
-    const data = await transferPropertyModel.find({buyer_metamask_address:address});
-    console.log(data);
-    if(data==null){
-        res.send("No Notifications");
-    }else{
-        res.send(data);
-    }
-}
+
 
 module.exports = {
-    propertytransfer,
+    requestToPropertytransfer,
     property_approved_buyer,
     sendSellerNotifications,
     sendBuyerNotifications,
-    getRealTimeEthers
+    getRealTimeEthers,
+    transferProperty,
+    rejectApproval
 };

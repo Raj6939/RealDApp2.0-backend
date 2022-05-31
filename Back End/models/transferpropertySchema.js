@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { schema } = require('./userSchema');
 const Schema = mongoose.Schema;
 
 const transferPropertySchema = new Schema({
@@ -34,6 +35,28 @@ const transferPropertySchema = new Schema({
     
 },{timestamps: true});
 
-const transferPropertyModel = mongoose.model('notification',transferPropertySchema);
+const propertyApprovedStatus = new Schema({
 
-module.exports = transferPropertyModel;
+    prop_id:{
+        type:Number,
+        required:true
+    },
+    approved_status:{
+        type:Boolean,
+        required:false,
+        default:false
+    }
+
+
+},{timestamps: true});
+
+
+const notification = mongoose.model('notification',propertyApprovedStatus);
+const sellPropertyModel = mongoose.model('sell_notification',transferPropertySchema);
+const buyPropertyModel = mongoose.model('buy_notification',transferPropertySchema);
+
+module.exports = {
+    sellPropertyModel,
+    buyPropertyModel,
+    notification
+};
