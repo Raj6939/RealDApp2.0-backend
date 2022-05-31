@@ -17,12 +17,14 @@ var transporter = nodemailer.createTransport({
 const propertytransfer = async(req,res) => {
   const buyer_metamask = req.body.obj.buyer_metamask_address;
   const buyer_email = req.body.obj.buyer_email;
+  const buyer_name = req.body.obj.buyer_name;
   const prop_id = req.body.obj.prop_id;
   const seller_details = await userModel.find({metamask_address:req.body.obj.seller_metamask_address});
   const notification = new transferPropertyModel({
     buyer_metamask_address:buyer_metamask,
     seller_metamask_address:seller_details[0].metamask_address,
     buyer_email:buyer_email,
+    buyer_name:buyer_name,
     seller_email:seller_details[0].email,
     prop_id:prop_id
   })

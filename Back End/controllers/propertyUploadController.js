@@ -126,6 +126,7 @@ const addnft = async(req,res) => {
     deployed : data.deployed
   })
   nft.save();
+  await propertyModel.deleteOne({_id:id});
   res.send(nft);
 
 }

@@ -1,5 +1,5 @@
 const userModel = require('../models/userSchema');
-const {propertyModel} = require('../models/propertySchema');
+const {propertyModel,newpropertyModel} = require('../models/propertySchema');
 const Web3 = require('web3');
 const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
 const createUser = (req,res) => {
@@ -57,9 +57,15 @@ const unapproved_users = async(req,res) => {
     res.send(data);
 }
 
-const getUserApproved = async(req,res) => {
+const getProperties = async(req,res) => {
     const id = req.params.id;
     const data = await propertyModel.find({metamask_address:id});
+    res.send(data);
+}
+
+const deployedProperties = async(req,res) => {
+    const id = req.params.id;
+    const data = await newpropertyModel.find({metamask_address:id});
     res.send(data);
 }
 
@@ -82,8 +88,9 @@ const verifySign= async(req,res) => {
 
 module.exports = {
     createUser,
-    getUserApproved,
+    getProperties,
     approve_user,
     verifySign,
-    unapproved_users
+    unapproved_users,
+    deployedProperties
 };

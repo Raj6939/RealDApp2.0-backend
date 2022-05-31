@@ -14,6 +14,10 @@ const transferPropertySchema = new Schema({
         type:String,
         required:true
     },
+    buyer_name:{
+        type:String,
+        required:true
+    },
     seller_email:{
         type:String,
         required:true
