@@ -125,12 +125,25 @@ res.send("ok");
 };
 
 const property_approved_buyer = async(req,res) => {
-    
+    const prop_id = req.body.obj.prop_id;
+    await transferPropertyModel.updateOne({prop_id:prop_id},{$set:{approved_status:true}});
+    res.send(true);
 }
 
-const sendNotifications = async(req,res) => {
+const sendSellerNotifications = async(req,res) => {
     const address = req.params.metamask_address;
     const data = await transferPropertyModel.find({seller_metamask_address:address});
+    console.log(data);
+    if(data==null){
+        res.send("No Notifications");
+    }else{
+        res.send(data);
+    }
+}
+
+const sendBuyerNotifications = async(req,res) => {
+    const address = req.params.metamask_address;
+    const data = await transferPropertyModel.find({buyer_metamask_address:address});
     console.log(data);
     if(data==null){
         res.send("No Notifications");
@@ -142,5 +155,6 @@ const sendNotifications = async(req,res) => {
 module.exports = {
     propertytransfer,
     property_approved_buyer,
-    sendNotifications
+    sendSellerNotifications,
+    sendBuyerNotifications
 };
