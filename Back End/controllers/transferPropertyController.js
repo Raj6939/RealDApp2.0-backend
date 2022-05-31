@@ -3,6 +3,8 @@ const transferPropertyModel = require('../models/transferpropertySchema.js');
 const userModel = require('../models/userSchema'); 
 const html = require('./email.js');
 var nodemailer = require('nodemailer');
+const {getEthPriceNow,getEthPriceHistorical}= require('get-eth-price');
+let converter = require('@accubits/currency-converter');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -141,6 +143,28 @@ const sendSellerNotifications = async(req,res) => {
     }
 }
 
+const getRealTimeEthers = async(req,res) => {
+
+        getEthPriceNow()
+    .then( data => {
+    console.log(data);
+    converter.convert('USD','INR',1).then(respn=>{  
+        console.log(respn)  
+        let usd = (req.body.rs)/(respn.value);
+        var newobject;
+        for(var c in data){
+            newobject = data[c];
+            break;
+        }
+        console.log(newobject.ETH);
+        let eth = (usd)/(newobject.ETH.USD);
+        eth = String(eth);
+        res.send(eth);
+    })
+    });
+
+}
+
 const sendBuyerNotifications = async(req,res) => {
     const address = req.params.metamask_address;
     const data = await transferPropertyModel.find({buyer_metamask_address:address});
@@ -156,5 +180,6 @@ module.exports = {
     propertytransfer,
     property_approved_buyer,
     sendSellerNotifications,
-    sendBuyerNotifications
+    sendBuyerNotifications,
+    getRealTimeEthers
 };

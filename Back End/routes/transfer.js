@@ -10,4 +10,6 @@ router.get('/seller_notifications/:metamask_address',transfer.sendSellerNotifica
 
 router.get('/buyer_notifications/:metamask_address',transfer.sendBuyerNotifications);
 
+router.post('/get_eth',transfer.getRealTimeEthers);
+
 module.exports = router;
