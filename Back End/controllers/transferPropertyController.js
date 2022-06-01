@@ -129,7 +129,7 @@ res.send("ok");
 };
 
 const property_approved_buyer = async(req,res) => {
-    const _id = req.body.id;
+    const _id = req.body.obj
     const data = await sellPropertyModel.findOne({_id:_id});
     const raw = await notification.findOne({prop_id:data.prop_id});
     console.log(raw);
@@ -181,9 +181,8 @@ const property_approved_buyer = async(req,res) => {
 }
 
 const transferProperty = async(req,res) => {
-    const prop_id = req.body.prop_id;
-    const to = req.body.buyer;
-
+    const prop_id = req.body.obj.prop_id;
+    const to = req.body.obj.buyer_metamask_address;
     const data = await userModel.findOne({metamask_address:to});
     console.log(data);
     await newpropertyModel.updateOne({prop_id:prop_id},{metamask_address:to, adharNo:data.adharcardNo});
@@ -211,7 +210,7 @@ const transferProperty = async(req,res) => {
 }
 
 const rejectApproval = async(req,res) => {
-    const _id = req.body.id;
+    const _id = req.body.obj;
     const data = await sellPropertyModel.find({_id:_id});
     console.log(data);
     await sellPropertyModel.updateOne({_id:_id},{$set:{approved_status:false}});
@@ -261,12 +260,14 @@ const sendBuyerNotifications = async(req,res) => {
 
 const getRealTimeEthers = async(req,res) => {
 
+    const propInfo = await newpropertyModel.findOne({prop_id:req.body.obj})
+
         getEthPriceNow()
     .then( data => {
     console.log(data);
     converter.convert('USD','INR',1).then(respn=>{  
         console.log(respn)  
-        let usd = (req.body.rs)/(respn.value);
+        let usd = (propInfo.prop_price)/(respn.value);
         var newobject;
         for(var c in data){
             newobject = data[c];

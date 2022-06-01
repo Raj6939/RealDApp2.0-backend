@@ -6,7 +6,7 @@ router.post('/property_upload',properties.upload.single("file"),properties.prope
 
 router.get('/existing_property_get/:metamask_address',properties.getExistingDBProperty);  //sending existingDB data to the user
 
-router.get('/deployed_property_get:/metamask_address',properties.getDeployedProperties); //sending nfts or deployed properties to the user
+router.get('/deployed_property_get/:metamask_address',properties.getDeployedProperties); //sending nfts or deployed properties to the user
 
 router.post('/set_prop_price/:id',properties.setprice); //sets price of the properties
 
