@@ -106,6 +106,17 @@ const setprice = async(req,res) => {
 
 }
 
+const setpriceNFT = async(req,res) => {
+
+  const id = req.params.id;
+  const price = req.body.obj;
+  const data = await newpropertyModel.updateOne({_id:id},{$set : {prop_price:price}}).then((result) => {
+      res.send(true);
+    }).catch((err) => {
+      res.send(false);
+    });
+  }
+
 const addnft = async(req,res) => {
   const id = req.params.id;
   const result = await propertyModel.updateOne({_id:id},{$set:{deployed:true}});
@@ -162,5 +173,6 @@ module.exports = {
     upload,
     download,
     setprice,
-    addnft
+    addnft,
+    setpriceNFT
 };

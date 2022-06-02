@@ -14,4 +14,5 @@ router.get('/file/:filename',properties.download); //displaying file by specifie
 
 router.post('/addnft/:id',properties.addnft);  //adding property details as nft in mongodb 
 
+router.post('/set_price_Nft/:id',properties.setpriceNFT) // set price after deployment of nft
 module.exports = router;
