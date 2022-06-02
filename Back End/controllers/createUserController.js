@@ -74,12 +74,12 @@ const verifySign= async(req,res) => {
     const signature = req.body.signature_data;
     const userData = await userModel.findOne({adharcardNo:adharcardNo});
     if(userData==null || !userData){
-        res.sendStatus(404)
+        res.send(false)
     }else{
         if(userData.signUpsignature == signature){
             res.send(userData);
         }else {
-            res.sendStatus(404);
+            res.send(false);
         }
     }
     
