@@ -2,7 +2,7 @@ const userModel = require('../models/userSchema');
 const {propertyModel,newpropertyModel} = require('../models/propertySchema');
 const Web3 = require('web3');
 const web3 = new Web3("https://rinkeby.infura.io/v3/5503310e5d284cb1bbcd784f05369a0e")
-const createUser = (req,res) => {
+const createUser = async(req,res) => {
     console.log(req.body)
     const metamask_address= req.body.metamask_address;
     const name=req.body.name;
@@ -10,24 +10,34 @@ const createUser = (req,res) => {
     const mobile = req.body.mobile;
     const adharcardNo = req.body.adharcardNo;
     const signUpsignature = req.body.signUpsignature
-    const user = new userModel({
-        metamask_address,
-        name,
-        mobile,
-        email,
-        adharcardNo,
-        signUpsignature
-    });
 
-    user.save()
-        .then((result) => {
-            console.log(result);
-            res.send(true);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send(false);
-        })
+    const checkData = await userModel.find( { $or: [ { metamask_address:metamask_address }, { adharcardNo:adharcardNo } ] } );
+    console.log(checkData);
+    if(checkData==null || checkData.length==0){
+
+        const user = new userModel({
+            metamask_address,
+            name,
+            mobile,
+            email,
+            adharcardNo,
+            signUpsignature
+        });
+    
+        user.save()
+            .then((result) => {
+                console.log(result);
+                res.send(true);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send(false);
+            })
+    }else {
+        res.send(false)
+    }
+
+    
     
 };
 
