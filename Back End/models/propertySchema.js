@@ -50,7 +50,7 @@ const propertySchema = new Schema({
         type:Boolean,
         required:true
     },
-    tranasaction_hash: {
+    deployedHash: {
         type:String,
         required:false
     }

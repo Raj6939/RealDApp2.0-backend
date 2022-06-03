@@ -116,11 +116,11 @@ const setpriceNFT = async(req,res) => {
 
 const addnft = async(req,res) => {
   const id = req.params.id;
+  console.log(req.body)
   const result = await propertyModel.updateOne({_id:id},{$set:{deployed:true}});
   const data = await propertyModel.findOne({_id:id});
-  const tranasaction_hash = req.body.tranasactionHash
   const nft = new newpropertyModel({
-    prop_id : req.body.obj,
+    prop_id : req.body.obj.id,
     prop_area : data.prop_area,
     prop_house_no : data.prop_house_no,
     prop_landmark : data.prop_landmark,
@@ -132,7 +132,7 @@ const addnft = async(req,res) => {
     prop_price : data.prop_price, 
     metamask_address : data.metamask_address,
     deployed : data.deployed,
-    tranasaction_hash:tranasaction_hash
+    deployedHash:req.body.obj.deployedHash
   })
   nft.save();
   await propertyModel.deleteOne({_id:id});
