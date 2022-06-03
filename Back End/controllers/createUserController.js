@@ -27,7 +27,7 @@ const createUser = async(req,res) => {
         user.save()
             .then((result) => {
                 console.log(result);
-                res.send(true);
+                res.send(result);
             })
             .catch((err) => {
                 console.log(err);
