@@ -49,8 +49,16 @@ const propertySchema = new Schema({
     deployed: {
         type:Boolean,
         required:true
+    },
+    tranasaction_hash: {
+        type:String,
+        required:false
     }
 },{timestamps: true});
+
+propertySchema.path('adharNo').validate(function(code) {
+    return code.length === 12;
+  }, 'Adhar Card Number Must Be 12 Digits');
 
 const propertyModel = mongoose.model('ExistingDB',propertySchema);
 const newpropertyModel = mongoose.model('Nfts',propertySchema);
