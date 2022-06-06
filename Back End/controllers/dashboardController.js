@@ -1,16 +1,11 @@
-const {propertyModel,rawPropertyModel} = require('../models/propertySchema.js');
+const {newpropertyModel} = require('../models/propertySchema.js');
+const { response } = require('express');
 
 const home = async(req,res) => {
-    const property = await propertyModel.find();
+    
+    const property = await newpropertyModel.find();
     res.send(property);
+    
 };
 
-const displayAllUnapprovedProperties = async(req,res) => {
-    const property = await rawPropertyModel.find();
-    res.send(property);
-};
-
-module.exports = {
-    home,
-    displayAllUnapprovedProperties
-};
+module.exports = home;

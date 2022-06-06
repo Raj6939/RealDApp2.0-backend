@@ -1,17 +1,18 @@
 const express = require('express');
-const {propertyUpload, getproperty,approvedPropertyUpload, upload, download, updateDetails} = require('../controllers/propertyUploadController');
+const properties = require('../controllers/propertyUploadController');
 const router = express.Router();
 
-router.post('/property_upload',upload.single("file"),propertyUpload); //property data upload to unapproved properties collection
+router.post('/property_upload',properties.upload.single("file"),properties.propertyUpload); //property data upload to unapproved properties collection
 
-router.get('/property_get',getproperty);  //sending approved data to the user
+router.get('/existing_property_get/:metamask_address',properties.getExistingDBProperty);  //sending existingDB data to the user
 
-router.get('/property_upload_blockchain',approvedPropertyUpload); 
+router.get('/deployed_property_get/:metamask_address',properties.getDeployedProperties); //sending nfts or deployed properties to the user
 
-router.get('/file/:filename',download); //displaying file by specified filename
+router.post('/set_prop_price/:id',properties.setprice); //sets price of the properties
 
-router.post('/approved_property_upload',approvedPropertyUpload); //property data upload to approved properties collection
+router.get('/file/:filename',properties.download); //displaying file by specified filename
 
-router.post('/property_update',updateDetails); //updating property details
+router.post('/addnft/:id',properties.addnft);  //adding property details as nft in mongodb 
 
+router.post('/set_price_Nft/:id',properties.setpriceNFT) // set price after deployment of nft
 module.exports = router;

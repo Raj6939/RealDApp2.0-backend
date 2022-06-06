@@ -1,4 +1,4 @@
-const {propertyModel,rawPropertyModel} = require('../models/propertySchema.js');
+const {propertyModel,newpropertyModel} = require('../models/propertySchema.js');
 const fs = require('fs');
 const multer = require("multer");
 const crypto = require("crypto");
@@ -10,7 +10,7 @@ const {
 } = require("multer-gridfs-storage");
 const GridFSBucket = require("mongodb").GridFSBucket;
 
-var fileName;
+var fileName='';
 
 const dburl = process.env.DB_CONNECTION ;
 mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
@@ -33,15 +33,13 @@ mongoose.connection.on("connected", () => {
 const storage = new GridFsStorage({
     url: dburl,
     file: (req, file) => {
-      console.log("hi");
-      console.log(file);
       return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
+        crypto.randomBytes(16, async(err, buf) => {
           if (err) {
             return reject(err);
           }
           const filename = buf.toString("hex") + path.extname(file.originalname);
-          fileName=filename;
+          fileName= filename
           const fileInfo = {
             filename: filename,
             bucketName: "uploads"
@@ -52,96 +50,105 @@ const storage = new GridFsStorage({
     }
   });
   
-  const upload = multer({
+const upload = multer({
     storage
-  });
+});
 
 const propertyUpload = (req,res) => {
 
   const obj = JSON.parse(JSON.stringify(req.body));
-
-    const metamask_address= obj.metamask_address;
-    // const prop_id=obj.prop_id;
     const prop_area=obj.prop_area;
     const prop_house_no=obj.prop_house_no;
     const prop_landmark=obj.prop_landmark;
     const prop_city=obj.prop_city;
     const prop_state=obj.prop_state;
-    const prop_price=obj.prop_price;
     const prop_document=fileName;
     const prop_surveyNumber=obj.prop_surveyNumber;
+    const adharNo = obj.adharNo;
+    const deployed = false;
 
-    const property = new rawPropertyModel({
-        metamask_address,
-        prop_id,
+    const property = new propertyModel({
         prop_area,
         prop_house_no,
         prop_landmark,
         prop_city,
         prop_state,
-        prop_price,
-        prop_document,
-        prop_surveyNumber
-    });
-
-    property.save()
-        .then((result) => {
-            console.log(result);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-    res.send("Hello World Post");
-};
-
-const approvedPropertyUpload = (req,res) => {
-
-    const metamask_address= req.body.metamask_address;
-    // const prop_id=req.body.prop_id;
-    const prop_area=req.body.prop_area;
-    const prop_house_no=req.body.prop_house_no;
-    const prop_landmark=req.body.prop_landmark;
-    const prop_city=req.body.prop_city;
-    const prop_state=req.body.prop_state;
-    const prop_price=req.body.prop_price;
-    const prop_document=req.body.prop_document;
-    const prop_surveyNumber=req.body.prop_surveyNumber;
-    const prop_approved = req.body.prop_approved;
-    const prop_reject = req.body.prop_reject;
-
-    if(prop_reject==true){
-      res.send("property rejected");
-    }else {
-
-        const property = new propertyModel({
-        metamask_address,
-        prop_id,
-        prop_area,
-        prop_house_no,
-        prop_landmark,
-        prop_city,
-        prop_state,
-        prop_price,
         prop_document,
         prop_surveyNumber,
-        prop_approved,
-        prop_reject
+        adharNo,
+        deployed
     });
 
     property.save()
         .then((result) => {
             console.log(result);
+            res.send(true);
         })
         .catch((err) => {
             console.log(err);
+            res.send(false);
         })
-    res.send("property approved");
+    
+};
 
-    }
+const setprice = async(req,res) => {
+
+  const id = req.params.id;
+  const price = req.body.obj.prop_price;
+  const data = await propertyModel.updateOne({_id:id},{$set : {prop_price:price}}).then((result) => {
+      res.send(true);
+    }).catch((err) => {
+      res.send(false);
+    });
+
 }
 
-const getproperty = async(req,res) => {
-    const data = await propertyModel.find();
+const setpriceNFT = async(req,res) => {
+
+  const id = req.params.id;
+  const price = req.body.obj;
+  const data = await newpropertyModel.updateOne({_id:id},{$set : {prop_price:price}}).then((result) => {
+      res.send(true);
+    }).catch((err) => {
+      res.send(false);
+    });
+  }
+
+const addnft = async(req,res) => {
+  const id = req.params.id;
+  console.log(req.body)
+  const result = await propertyModel.updateOne({_id:id},{$set:{deployed:true}});
+  const data = await propertyModel.findOne({_id:id});
+  const nft = new newpropertyModel({
+    prop_id : req.body.obj.id,
+    prop_area : data.prop_area,
+    prop_house_no : data.prop_house_no,
+    prop_landmark : data.prop_landmark,
+    prop_city : data.prop_city,
+    prop_state : data.prop_state,
+    prop_document : data.prop_document,
+    prop_surveyNumber : data.prop_surveyNumber,
+    adharNo : data.adharNo,
+    prop_price : data.prop_price, 
+    metamask_address : data.metamask_address,
+    deployed : data.deployed,
+    deployedHash:req.body.obj.deployedHash
+  })
+  nft.save();
+  await propertyModel.deleteOne({_id:id});
+  res.send(nft);
+
+}
+
+const getExistingDBProperty = async(req,res) => {
+    const metamask_address = req.params.metamask_address;
+    const data = await propertyModel.find({metamask_address:metamask_address});
+    res.send(data);
+}
+
+const getDeployedProperties = async(req,res) => {
+    const metamask_address = req.params.metamask_address;
+    const data = await newpropertyModel.find({metamask_address:metamask_address});
     res.send(data);
 }
 
@@ -158,38 +165,13 @@ const download = async (req, res) => {
   })
 };
 
-const updateDetails = async(req,res) => {
-
-    const obj = JSON.parse(JSON.stringify(req.body));
-
-    const metamask_address= obj.metamask_address;
-    const prop_id=obj.prop_id;
-    const prop_area=obj.prop_area;
-    const prop_house_no=obj.prop_house_no;
-    const prop_landmark=obj.prop_landmark;
-    const prop_city=obj.prop_city;
-    const prop_state=obj.prop_state;
-    const prop_price=obj.prop_price;
-    const prop_document=fileName;
-    const prop_surveyNumber=obj.prop_surveyNumber;
-
-    await rawPropertyModel.updateOne({metamask_address:metamask_address},{$set: {
-      prop_area:prop_area,
-      prop_house_no:prop_house_no,
-      prop_landmark:prop_landmark,
-      prop_city:prop_city,
-      prop_state:prop_state,
-      prop_price:prop_price,
-      prop_document:prop_document,
-      prop_surveyNumber:prop_surveyNumber
-    }});
-}
-
 module.exports = {
     propertyUpload,
-    getproperty,
-    approvedPropertyUpload,
+    getExistingDBProperty,
+    getDeployedProperties,
     upload,
     download,
-    updateDetails
+    setprice,
+    addnft,
+    setpriceNFT
 };

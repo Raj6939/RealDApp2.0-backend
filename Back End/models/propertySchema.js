@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
-    // prop_id:{
-    //     type:Number,
-    //     required:true
-    // },
+    prop_id:{
+        type:Number,
+        required:false
+    },
     prop_area:{
         type:String,
         required:true
@@ -28,7 +28,7 @@ const propertySchema = new Schema({
     },
     prop_price:{
         type:Number,
-        required:true
+        required:false
     },
     prop_document:{
         type:String,
@@ -40,22 +40,27 @@ const propertySchema = new Schema({
     },
     metamask_address:{
         type:String,
+        required:false
+    },
+    adharNo:{
+        type:String,
         required:true
     },
-    prop_approved:{
+    deployed: {
         type:Boolean,
-        default:false
+        required:true
     },
-    prop_reject:{
-        type:Boolean,
-        default:false
+    deployedHash: {
+        type:String,
+        required:false
     }
 },{timestamps: true});
 
-const propertyModel = mongoose.model('property',propertySchema);
-const rawPropertyModel = mongoose.model('unapprovedProperty',propertySchema);
+propertySchema.path('adharNo').validate(function(code) {
+    return code.length === 12;
+  }, 'Adhar Card Number Must Be 12 Digits');
 
-module.exports = {
-    propertyModel,
-    rawPropertyModel
-};
+const propertyModel = mongoose.model('ExistingDB',propertySchema);
+const newpropertyModel = mongoose.model('Nfts',propertySchema);
+
+module.exports = {propertyModel,newpropertyModel};
