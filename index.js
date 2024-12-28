@@ -9,13 +9,13 @@ require('dotenv/config');
 const app = express();
 
 app.use(cors());
-
-const dburl = process.env.DB_CONNECTION ;
+const dburl = "mongodb+srv://rakesh:rakesh12@cluster0.dd37o.mongodb.net/Land_Registry?retryWrites=true&w=majority"
+// const dburl = "mongodb+srv://rajpatil:idkid@cluster0.9kquv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
     .then((result) => {
-        console.log("connected");
+        console.log("connected index");
     })
-    .catch((err) => console.log("not"));
+    .catch((err) => console.log("not index"));
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -32,6 +32,6 @@ app.use(user);
 app.use(transfer);
 app.use(property);
 
-app.listen(process.env.PORT,() => {
+app.listen(3000,() => {
     console.log("running at 3000");
 })

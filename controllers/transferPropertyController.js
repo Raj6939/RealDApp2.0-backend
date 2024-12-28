@@ -2,6 +2,7 @@ const {propertyModel, newpropertyModel} = require('../models/propertySchema.js')
 const {sellPropertyModel, buyPropertyModel, notification} = require('../models/transferpropertySchema.js');
 const userModel = require('../models/userSchema'); 
 const html = require('./email.js');
+const CC = require('currency-converter-lt')
 var nodemailer = require('nodemailer');
 const {getEthPriceNow,getEthPriceHistorical}= require('get-eth-price');
 let converter = require('@accubits/currency-converter');
@@ -264,16 +265,14 @@ const getRealTimeEthers = async(req,res) => {
 
         getEthPriceNow()
     .then( data => {
-    console.log(data);
-    converter.convert('USD','INR',1).then(respn=>{  
-        console.log(respn)  
-        let usd = (propInfo.prop_price)/(respn.value);
+    let currencyConverter = new CC({from:"USD", to:"INR", amount:1, isDecimalComma:false})
+    currencyConverter.convert().then((response) => {
+        let usd = (propInfo.prop_price)/(response);
         var newobject;
         for(var c in data){
             newobject = data[c];
             break;
         }
-        console.log(newobject.ETH);
         let eth = (usd)/(newobject.ETH.USD);
         eth = String(eth);
         res.send(eth);

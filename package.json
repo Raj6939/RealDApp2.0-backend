@@ -13,6 +13,7 @@
     "@accubits/currency-converter": "^0.0.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "currency-converter-lt": "^2.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "get-eth-price": "^1.0.0",

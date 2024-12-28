@@ -12,7 +12,8 @@ const GridFSBucket = require("mongodb").GridFSBucket;
 
 var fileName='';
 
-const dburl = process.env.DB_CONNECTION ;
+const dburl = "mongodb+srv://rakesh:rakesh12@cluster0.dd37o.mongodb.net/Land_Registry?retryWrites=true&w=majority"
+// const dburl = "mongodb+srv://rajpatil:idkid@cluster0.9kquv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" ;
 mongoose.connect(dburl,{useNewUrlParser:true, useUnifiedTopology:true})
     .then((result) => {
         console.log("connected");
