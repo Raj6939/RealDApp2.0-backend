@@ -33,9 +33,9 @@ const userSchema = new Schema({
     },
 },{timestamps: true});
 
-userSchema.path('adharcardNo').validate(function(code) {
-    return code.length === 12;
-  }, 'Adhar Card Number Must Be 12 Digits');
+// userSchema.path('adharcardNo').validate(function(code) {
+//     return code.length === 12;
+//   }, 'Adhar Card Number Must Be 12 Digits');
 
 userSchema.path('mobile').validate(function(code) {
     return code.length === 10;

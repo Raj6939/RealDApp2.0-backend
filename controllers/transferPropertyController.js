@@ -259,27 +259,63 @@ const sendBuyerNotifications = async(req,res) => {
     }
 }
 
-const getRealTimeEthers = async(req,res) => {
+const AED_PER_USD = 3.6725;   // 1 USD ≈ 3.6725 AED
+const TARGET_ETH = 0.00018;   // your desired minimal ETH
+const MIN_ETH = 0.000001;     // safety floor to avoid zero
 
-    const propInfo = await newpropertyModel.findOne({prop_id:req.body.obj})
+const getRealTimeEthers = async (req, res) => {
+  console.log("in getRealTimeEthers");
 
-        getEthPriceNow()
-    .then( data => {
-    let currencyConverter = new CC({from:"USD", to:"INR", amount:1, isDecimalComma:false})
-    currencyConverter.convert().then((response) => {
-        let usd = (propInfo.prop_price)/(response);
-        var newobject;
-        for(var c in data){
-            newobject = data[c];
-            break;
-        }
-        let eth = (usd)/(newobject.ETH.USD);
-        eth = String(eth);
-        res.send(eth);
-    })
+  try {
+    // 1️⃣ Get property (price in AED)
+    const propInfo = await newpropertyModel.findOne({ prop_id: req.body.obj });
+    if (!propInfo) return res.status(404).send("Property not found");
+
+    const priceAed = Number(propInfo.prop_price) || 150000; // fallback if none
+    if (!Number.isFinite(priceAed) || priceAed <= 0) {
+      return res.status(400).send("Invalid property price");
+    }
+
+    // 2️⃣ Get ETH price
+    getEthPriceNow().then((data) => {
+      let newobject;
+      for (let c in data) { newobject = data[c]; break; }
+
+      const ethUsd = Number(newobject?.ETH?.USD);
+      if (!Number.isFinite(ethUsd) || ethUsd <= 0)
+        return res.status(502).send("Invalid ETH price");
+
+      // 3️⃣ AED → USD → real ETH
+      const usd = priceAed / AED_PER_USD;
+      const realEth = usd / ethUsd;
+
+      // 4️⃣ Compute scale so final ETH ≈ TARGET_ETH
+      const scale = realEth / TARGET_ETH;
+      let scaledEth = realEth / scale;
+
+      // apply tiny safety floor
+      if (scaledEth < MIN_ETH) scaledEth = MIN_ETH;
+
+      console.log({
+        priceAed,
+        usd,
+        ethUsd,
+        realEth,
+        scale,
+        scaledEth
+      });
+
+      // 5️⃣ Send minimal ETH back
+      res.send(String(Number(scaledEth.toFixed(6))));
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
-}
+
+
 
 
 
